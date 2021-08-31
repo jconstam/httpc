@@ -1,0 +1,112 @@
+---
+
+:project:
+  :use_exceptions: FALSE
+  :use_mocks: TRUE
+  :use_test_preprocessor: TRUE
+  :use_auxiliary_dependencies: TRUE
+  :compile_threads: 4
+  :test_threads: 4
+  :build_root: build_tests
+  :test_file_prefix: test_
+  :which_ceedling: gem
+  :default_tasks:
+    - test:all
+
+:module_generator:
+  :project_root: ./
+  :source_root: src
+  :test_root: test/unit_tests
+  :boilerplates:
+    :tst: |
+      // Standard libraries
+      #include <stdlib.h>
+      #include <stdint.h>
+      #include <stdbool.h>
+
+      // Unity's header
+      #include "unity.h"
+
+      // This module's header (move to here)
+
+      // Mocks for external libraries
+
+      // Mocks for other modules
+
+      // Support files
+
+:paths:
+  :test:
+    - src/**
+    - test/unit_tests/**
+  :support:
+    - test/unit_tests/support/**
+
+:defines:
+  :test:
+    - TEST
+
+:flags:
+  :test:
+    :*:
+      :*:
+        - -O0 -Wall -Wextra -Werror
+
+:cmock:
+  :mock_prefix: mock_
+  :when_no_prototypes: :warn
+  :enforce_strict_ordering: TRUE
+  :plugins:
+    - :ignore
+    - :ignore_arg
+    - :expect_any_args
+    - :return_thru_ptr
+    - :callback
+    - :array
+  :treat_as_array:
+    va_list: void
+    __va_list: void
+    __va_list_tag: void
+  :treat_as:
+    uint8:    HEX8
+    uint16:   HEX16
+    uint32:   UINT32
+    int8:     INT8
+    bool:     UINT8
+
+:gcov:
+  :reports:
+    - HtmlDetailed
+  :gcovr:
+    :html_artifact_filename: index.html
+    :html_medium_threshold: 50
+    :html_high_threshold: 80
+    :report_exclude: ".*vendor.*|.*build.*|.*test.*|.*lib.*"
+
+:junit_tests_report:
+  :artifact_filename: report_junit.xml
+
+:tools:
+  :test_fixture:
+    :executable: valgrind
+    :name: 'Valgrind'
+    :arguments:
+      - --tool=memcheck
+      - --leak-check=yes
+      - --show-reachable=yes
+      - --xml=yes
+      - "--xml-file=build_tests/artifacts/test/`basename ${1}`.xml"
+      - "${1}"
+
+:plugins:
+  :load_paths:
+    - "#{Ceedling.load_path}"
+  :enabled:
+    - command_hooks
+    - module_generator
+    - warnings_report
+    - junit_tests_report
+    - gcov
+    - xml_tests_report
+    - stdout_pretty_tests_report
+...

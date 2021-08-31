@@ -11,7 +11,8 @@
 // This module's header (move to here)
 #include "main.h"
 
-// Mocks for external libraries
+// Mocks for operating system interfaces
+#include "mock_osi.h"
 
 // Mocks for other modules
 
